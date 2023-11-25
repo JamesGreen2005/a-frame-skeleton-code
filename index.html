@@ -6,6 +6,10 @@
   </head>
   <body>
     <a-scene>
+
+      <!-- Sun -->
+      <a-sphere id="Sun" class="Sun" position="0 30 -50" radius="5" color="#FDB813" glow="radius: 50; intensity: 100; color: ##FFFFFF"></a-sphere>
+
       <a-entity position="0 1 -2">
 
         <!-- Table -->
@@ -20,7 +24,7 @@
         <!-- Fruit Bowl -->
         <a-entity id="fruitBowl" position="0 0.5 -5" rotation="0 0 0"
                   animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 10000;">
-          <a-cylinder radius="1.5" height="0.5" color="#E0E0E0"></a-cylinder> <!-- Main body of the bowl -->
+          <a-cylinder radius="1.5" height="0.5" color="#E0E0E0"></a-cylinder>
 
           <!-- Fruit -->
 
@@ -80,9 +84,50 @@
           }
 
           // Set random colors for all fruits
-          document.querySelectorAll('a-sphere').forEach(function(sphere) {
+          document.querySelectorAll('a-sphere:not(.Sun)').forEach(function(sphere) {
             sphere.setAttribute('color', getRandomColor());
           });
+          
+          // Function to run the light up and glow down animation
+          function runAnimation() {
+            var Sun = document.getElementById('Sun');
+            Sun.emit('startLightUp');
+
+            setTimeout(function() {
+              sun.emit('startGlowDown');
+            }, 2000);
+          }
+
+          //Function to continusly run the animation
+          function loopAnimation() {
+            runAnimation();
+            setTimeout(loopAnimation, 2000);
+          }
+
+          //Animation to make the sun light up
+          var Sun = document.getElementById('Sun');
+          Sun.setAttribute('animation__color', {
+            property: 'material.color',
+            type: 'color',
+            from: '#FDB813',
+            to: '#FFFF00',
+            startEvents: 'startLightUp',
+            dur: 1000
+          });
+
+          //Animation to make the sun glow down
+          Sun.setAttribute('animation__color_back', {
+            property: 'material.color',
+            type: 'color',
+            from: '#FFFF00',
+            to: 'FDB813',
+            startEvents: 'startGlowDown',
+            dur: 1000
+          });
+
+          // Start the animation loop
+          loopAnimation();
+          
         </script>
       </a-entity>
     </a-scene>
